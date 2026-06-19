@@ -8,7 +8,6 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
         body { font-family: 'JetBrains+Mono', monospace; }
-        
         .terminal-scroll::-webkit-scrollbar { width: 4px; }
         .terminal-scroll::-webkit-scrollbar-thumb { background: #22d3ee; border-radius: 2px; }
     </style>
@@ -33,7 +32,7 @@
             <h2 class="font-bold border-b border-slate-800 pb-2 text-cyan-400">📊 Engineer Profiles</h2>
             <div class="flex flex-col gap-3 text-sm">
                 <div><span class="text-slate-400">Role:</span> <span id="stat-role" class="font-bold text-white">-</span></div>
-                <div><span class="text-slate-400">Python Level:</span> <span id="stat-level" class="font-bold text-emerald-400">1</span></div>
+                <div><span class="text-slate-400">Pipeline Level:</span> <span id="stat-level" class="font-bold text-emerald-400">1</span></div>
                 
                 <div class="mt-2">
                     <div class="flex justify-between text-xs mb-1">
@@ -62,29 +61,27 @@
         <div class="flex-grow bg-slate-900 border border-slate-800 rounded-xl p-6 flex flex-col justify-between shadow-xl min-h-[450px]">
             
             <div id="stage-container" class="flex-grow flex flex-col justify-center">
-                <div id="selection-view" class="text-center animate-fade-in">
+                
+                <div id="selection-view" class="text-center">
                     <h3 class="text-xl font-bold mb-6 text-white">Choose Your Specialty</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
-                        
-                        <div onclick="initGame('Data Cleaner')" class="cursor-pointer border border-slate-800 bg-slate-950/40 hover:border-cyan-500 p-5 rounded-xl text-left transition-all group hover:shadow-lg hover:shadow-cyan-950/20">
+                        <div onclick="initGame('Data Cleaner')" class="cursor-pointer border border-slate-800 bg-slate-950/40 hover:border-cyan-500 p-5 rounded-xl text-left transition-all group">
                             <span class="text-2xl">🧹</span>
                             <h4 class="font-bold text-white group-hover:text-cyan-400 mt-2">Data Cleaner</h4>
                             <p class="text-xs text-slate-400 mt-1">Specializes in parsing missing values and removing system anomalies instantly.</p>
                         </div>
-
-                        <div onclick="initGame('Model Trainer')" class="cursor-pointer border border-slate-800 bg-slate-950/40 hover:border-emerald-500 p-5 rounded-xl text-left transition-all group hover:shadow-lg hover:shadow-emerald-950/20">
+                        <div onclick="initGame('Model Trainer')" class="cursor-pointer border border-slate-800 bg-slate-950/40 hover:border-emerald-500 p-5 rounded-xl text-left transition-all group">
                             <span class="text-2xl">🤖</span>
                             <h4 class="font-bold text-white group-hover:text-emerald-400 mt-2">Model Trainer</h4>
                             <p class="text-xs text-slate-400 mt-1">Focuses on parameter adjustments to optimize predictive loss matrix outputs.</p>
                         </div>
-
                     </div>
                 </div>
 
                 <div id="arena-view" class="hidden flex-col h-full gap-4">
                     <div class="bg-slate-950/60 border border-slate-800 p-4 rounded-lg flex justify-between items-center">
                         <div>
-                            <h4 id="bug-name" class="font-bold text-rose-400">⚠️ System Bug Detected</h4>
+                            <h4 id="bug-name" class="font-bold text-rose-400">⚠️ System Bug Level 1</h4>
                             <p id="bug-desc" class="text-xs text-slate-400">Missing values are collapsing the feature array matrix!</p>
                         </div>
                         <div class="text-right">
@@ -94,7 +91,16 @@
                     </div>
 
                     <div id="terminal-logs" class="terminal-scroll flex-grow bg-slate-950 p-3 rounded-lg border border-slate-850 text-xs font-mono text-cyan-400/90 overflow-y-auto h-32 flex flex-col gap-1">
-                        <div>&gt; System initialization completed. Select an action matrix execution profile...</div>
+                        <div>&gt; Pipeline active. Awaiting matrix command protocols...</div>
+                    </div>
+
+                    <div class="flex justify-between items-center gap-2 mt-2">
+                        <button id="prev-btn" onclick="changeLevel('prev')" class="cursor-pointer bg-slate-950 hover:bg-slate-800 border border-slate-800 text-xs px-4 py-2 rounded text-slate-400 transition-all font-bold opacity-50 cursor-not-allowed" disabled>
+                            ⬅️ Previous Level
+                        </button>
+                        <button id="next-btn" onclick="changeLevel('next')" class="cursor-pointer bg-cyan-950 text-cyan-400 hover:bg-cyan-900 border border-cyan-800 text-xs px-4 py-2 rounded transition-all font-bold hidden">
+                            Next Level ➡️
+                        </button>
                     </div>
                 </div>
             </div>
@@ -119,11 +125,19 @@
     </footer>
 
     <script>
-        // Game Variables
+        // Core State Constants
+        let currentLevel = 1;
         let bugHP = 70;
         let maxBugHP = 70;
+        let userPlayer = null;
 
-        // OOP State Archetype
+        // Level Configurations Array Matrix
+        const levelDatabase = {
+            1: { name: "⚠️ System Bug Level 1", desc: "Missing values are collapsing the feature array matrix!", hp: 70 },
+            2: { name: "🔥 Overfitting Anomaly Level 2", desc: "Model has memorized noise matrices. High divergence rate!", hp: 120 },
+            3: { name: "💀 Gradient Explosion Level 3", desc: "Weights are diverging towards infinity. Critical fail!", hp: 200 }
+        };
+
         class Player {
             constructor(role) {
                 this.role = role;
@@ -147,12 +161,9 @@
             }
         }
 
-        let userPlayer = null;
-
         function initGame(selectedRole) {
             userPlayer = new Player(selectedRole);
             
-            // Dom Swapping View Transitions
             document.getElementById('selection-view').classList.add('hidden');
             document.getElementById('stats-panel').classList.remove('hidden');
             document.getElementById('arena-view').classList.remove('hidden');
@@ -161,9 +172,7 @@
             document.getElementById('game-phase').innerText = "Production Arena";
             document.getElementById('game-phase').className = "text-xs bg-emerald-950/50 text-emerald-400 border border-emerald-800 px-3 py-1 rounded-full uppercase tracking-wider font-bold";
 
-            bugHP = 70;
-            document.getElementById('bug-hp').innerText = `${bugHP}/${maxBugHP}`;
-
+            loadLevelData();
             userPlayer.updateHUD();
             logTerminal(`Account created! Welcoming our newly registered ${selectedRole} to the pipeline.`);
         }
@@ -176,47 +185,88 @@
             terminal.scrollTop = terminal.scrollHeight;
         }
 
+        function loadLevelData() {
+            const currentLevelData = levelDatabase[currentLevel];
+            bugHP = currentLevelData.hp;
+            maxBugHP = currentLevelData.hp;
+            
+            document.getElementById('bug-name').innerText = currentLevelData.name;
+            document.getElementById('bug-desc').innerText = currentLevelData.desc;
+            document.getElementById('bug-hp').innerText = `${bugHP}/${maxBugHP}`;
+            
+            // Adjust Navigation UI Buttons States
+            const prevBtn = document.getElementById('prev-btn');
+            if(currentLevel > 1) {
+                prevBtn.disabled = false;
+                prevBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                prevBtn.classList.add('hover:bg-slate-800', 'text-white');
+            } else {
+                prevBtn.disabled = true;
+                prevBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                prevBtn.classList.remove('hover:bg-slate-800', 'text-white');
+            }
+            document.getElementById('next-btn').classList.add('hidden');
+        }
+
+        function changeLevel(direction) {
+            if(direction === 'next' && currentLevel < 3) {
+                currentLevel++;
+                userPlayer.level = currentLevel;
+                logTerminal(`Pipeline initialized to Level ${currentLevel}. Processing incoming threat array...`);
+            } else if(direction === 'prev' && currentLevel > 1) {
+                currentLevel--;
+                userPlayer.level = currentLevel;
+                logTerminal(`Rolled back compilation architecture to Level ${currentLevel}.`);
+            }
+            loadLevelData();
+            userPlayer.updateHUD();
+        }
+
         function executeAction(type) {
             if(!userPlayer || bugHP <= 0) return;
             
-            // --- Player Turn Logic ---
             if (type === 'basic') {
                 if(userPlayer.energy < 10) { logTerminal("Error: Low compute energy status! Read documentation."); return; }
                 userPlayer.energy -= 10;
                 bugHP = Math.max(0, bugHP - 15);
                 userPlayer.accuracy = Math.min(100, userPlayer.accuracy + 5);
-                logTerminal("Executed .fillna() pipeline. Cleaned data rows! Damaged bug by 15 HP.");
+                logTerminal(`Executed .fillna() pipeline mapping. Damaged matrix anomaly by 15 HP.`);
             } else if (type === 'heavy') {
-                if(userPlayer.energy < 30) { logTerminal("Error: Insufficient compute units to process ensembles!"); return; }
+                if(userPlayer.energy < 30) { logTerminal("Error: Insufficient compute units!"); return; }
                 userPlayer.energy -= 30;
                 bugHP = Math.max(0, bugHP - 35);
                 userPlayer.accuracy = Math.min(100, userPlayer.accuracy + 18);
-                logTerminal("Compiled Random Forest ensemble. Damaged bug by 35 HP!");
+                logTerminal(`Compiled Random Forest ensemble. Damaged matrix anomaly by 35 HP!`);
             } else if (type === 'heal') {
                 userPlayer.energy = Math.min(userPlayer.maxEnergy, userPlayer.energy + 25);
-                logTerminal("Refactored local scope logic. Restored 25 Energy.");
+                logTerminal("Refactored local scope variables. Restored +25 Compute Energy.");
             }
 
-            // Update Bug HP Interface
             document.getElementById('bug-hp').innerText = `${bugHP}/${maxBugHP}`;
 
-            // Check for Player Victory
             if(bugHP <= 0) {
-                logTerminal("🎉 VICTORY! Dataset fully debugged. +50 Compute Credits!");
+                logTerminal(`🎉 LEVEL ${currentLevel} CLEAR! Anomaly resolved successfully.`);
                 userPlayer.credits += 50;
                 userPlayer.updateHUD();
+                
+                if(currentLevel < 3) {
+                    document.getElementById('next-btn').classList.remove('hidden');
+                    logTerminal("Next iteration gate unlocked. Click 'Next Level' to advance processing nodes.");
+                } else {
+                    logTerminal("🏆 CONGRATULATIONS! You have debugged all core anomalies and completed Data Quest!");
+                }
                 return;
             }
 
-            // --- Enemy Bug Counter-Attack Turn ---
+            // Counter Attack Triggers
             if(type !== 'heal') {
                 setTimeout(() => {
                     if(bugHP <= 0) return; 
-                    let bugDamage = 12;
+                    let bugDamage = currentLevel === 1 ? 12 : (currentLevel === 2 ? 18 : 25);
                     userPlayer.energy = Math.max(0, userPlayer.energy - bugDamage);
-                    logTerminal(`⚠️ Bug Counter-Attacks! Array overflow drained your energy by ${bugDamage} units.`);
+                    logTerminal(`⚠️ Anomaly Counter-Attacks! Internal parameters drained energy by ${bugDamage} units.`);
                     userPlayer.updateHUD();
-                }, 1000);
+                }, 800);
             } else {
                 userPlayer.updateHUD();
             }
