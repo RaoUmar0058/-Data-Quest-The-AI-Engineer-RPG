@@ -1,4 +1,50 @@
-<!DOCTYPE html>
+// Is variable ko script ke start mein declare karein
+let bugHP = 70;
+let maxBugHP = 70;
+
+function executeAction(type) {
+    if(!userPlayer || bugHP <= 0) return;
+    
+    // Player Turn Logic
+    if (type === 'basic') {
+        if(userPlayer.energy < 10) { logTerminal("Error: Low compute energy status!"); return; }
+        userPlayer.energy -= 10;
+        bugHP = Math.max(0, bugHP - 15);
+        logTerminal("Executed .fillna() pipeline. Cleaned data rows! Damaged bug by 15 HP.");
+    } else if (type === 'heavy') {
+        if(userPlayer.energy < 30) { logTerminal("Error: Insufficient compute units!"); return; }
+        userPlayer.energy -= 30;
+        bugHP = Math.max(0, bugHP - 35);
+        logTerminal("Compiled Random Forest ensemble. Damaged bug by 35 HP!");
+    } else if (type === 'heal') {
+        userPlayer.energy = Math.min(userPlayer.maxEnergy, userPlayer.energy + 25);
+        logTerminal("Refactored local scope logic. Restored 25 Energy.");
+    }
+
+    // Update UI Elements for Bug
+    document.getElementById('bug-hp').innerText = `${bugHP}/${maxBugHP}`;
+
+    // Check Victory
+    if(bugHP <= 0) {
+        logTerminal("🎉 VICTORY! Dataset fully debugged. +50 Compute Credits!");
+        userPlayer.credits += 50;
+        userPlayer.updateHUD();
+        return;
+    }
+
+    // Bug Counter-Attack Turn (Triggers automatically after 1 second if player didn't just heal for free)
+    if(type !== 'heal') {
+        setTimeout(() => {
+            let bugDamage = 12;
+            userPlayer.energy = Math.max(0, userPlayer.energy - bugDamage);
+            logTerminal(`⚠️ Bug Counter-Attacks! Array overflow drained your energy by ${bugDamage} units.`);
+            userPlayer.updateHUD();
+        }, 1000);
+    } else {
+        userPlayer.updateHUD();
+    }
+}
+        <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
