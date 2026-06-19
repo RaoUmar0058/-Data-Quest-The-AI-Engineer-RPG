@@ -5,8 +5,7 @@ A premium, interactive browser-based role-playing game engineered using strict *
 ---
 
 ## 🔗 Live Application Dashboard
-🌐 **[Launch the Production Arena Simulation](https://github.com/RaoUmar0058)** *(Apna unique deployment link yahan replace kar sakti hain)*
-
+🌐 **[Launch the Production Arena Simulation](https://data-quest-the-ai-engineer-rpg.vercel.app)
 ---
 
 ## 🚀 Core Architectural Capabilities
