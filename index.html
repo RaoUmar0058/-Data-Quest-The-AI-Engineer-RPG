@@ -1,50 +1,4 @@
-// Is variable ko script ke start mein declare karein
-let bugHP = 70;
-let maxBugHP = 70;
-
-function executeAction(type) {
-    if(!userPlayer || bugHP <= 0) return;
-    
-    // Player Turn Logic
-    if (type === 'basic') {
-        if(userPlayer.energy < 10) { logTerminal("Error: Low compute energy status!"); return; }
-        userPlayer.energy -= 10;
-        bugHP = Math.max(0, bugHP - 15);
-        logTerminal("Executed .fillna() pipeline. Cleaned data rows! Damaged bug by 15 HP.");
-    } else if (type === 'heavy') {
-        if(userPlayer.energy < 30) { logTerminal("Error: Insufficient compute units!"); return; }
-        userPlayer.energy -= 30;
-        bugHP = Math.max(0, bugHP - 35);
-        logTerminal("Compiled Random Forest ensemble. Damaged bug by 35 HP!");
-    } else if (type === 'heal') {
-        userPlayer.energy = Math.min(userPlayer.maxEnergy, userPlayer.energy + 25);
-        logTerminal("Refactored local scope logic. Restored 25 Energy.");
-    }
-
-    // Update UI Elements for Bug
-    document.getElementById('bug-hp').innerText = `${bugHP}/${maxBugHP}`;
-
-    // Check Victory
-    if(bugHP <= 0) {
-        logTerminal("🎉 VICTORY! Dataset fully debugged. +50 Compute Credits!");
-        userPlayer.credits += 50;
-        userPlayer.updateHUD();
-        return;
-    }
-
-    // Bug Counter-Attack Turn (Triggers automatically after 1 second if player didn't just heal for free)
-    if(type !== 'heal') {
-        setTimeout(() => {
-            let bugDamage = 12;
-            userPlayer.energy = Math.max(0, userPlayer.energy - bugDamage);
-            logTerminal(`⚠️ Bug Counter-Attacks! Array overflow drained your energy by ${bugDamage} units.`);
-            userPlayer.updateHUD();
-        }, 1000);
-    } else {
-        userPlayer.updateHUD();
-    }
-}
-        <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -61,7 +15,6 @@ function executeAction(type) {
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between select-none">
 
-    <!-- Top Dashboard Header -->
     <header class="border-b border-slate-800 p-4 bg-slate-900/50 backdrop-blur">
         <div class="max-w-5xl mx-auto flex justify-between items-center">
             <div>
@@ -74,17 +27,14 @@ function executeAction(type) {
         </div>
     </header>
 
-    <!-- Main Game Frame -->
     <main class="flex-grow max-w-5xl w-full mx-auto p-4 flex flex-col md:flex-row gap-4 items-stretch justify-center">
         
-        <!-- Left Panel: Dynamic Stats HUD (Hidden during initialization selection) -->
         <div id="stats-panel" class="hidden w-full md:w-1/3 bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col gap-4 shadow-xl">
             <h2 class="font-bold border-b border-slate-800 pb-2 text-cyan-400">📊 Engineer Profiles</h2>
             <div class="flex flex-col gap-3 text-sm">
                 <div><span class="text-slate-400">Role:</span> <span id="stat-role" class="font-bold text-white">-</span></div>
                 <div><span class="text-slate-400">Python Level:</span> <span id="stat-level" class="font-bold text-emerald-400">1</span></div>
                 
-                <!-- Energy Progress Bar -->
                 <div class="mt-2">
                     <div class="flex justify-between text-xs mb-1">
                         <span class="text-slate-400">Energy ⚡</span>
@@ -95,7 +45,6 @@ function executeAction(type) {
                     </div>
                 </div>
 
-                <!-- Accuracy Metrics Bar -->
                 <div class="mt-1">
                     <div class="flex justify-between text-xs mb-1">
                         <span class="text-slate-400">Model Accuracy 🎯</span>
@@ -110,12 +59,9 @@ function executeAction(type) {
             </div>
         </div>
 
-        <!-- Right / Central Panel: Dynamic Interface -->
         <div class="flex-grow bg-slate-900 border border-slate-800 rounded-xl p-6 flex flex-col justify-between shadow-xl min-h-[450px]">
             
-            <!-- Dynamic Stage Container -->
             <div id="stage-container" class="flex-grow flex flex-col justify-center">
-                <!-- Phase 1: Selection Cards -->
                 <div id="selection-view" class="text-center animate-fade-in">
                     <h3 class="text-xl font-bold mb-6 text-white">Choose Your Specialty</h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
@@ -135,9 +81,7 @@ function executeAction(type) {
                     </div>
                 </div>
 
-                <!-- Phase 2: Action Arena Console (Initially Hidden) -->
                 <div id="arena-view" class="hidden flex-col h-full gap-4">
-                    <!-- Enemy / Bug Status Area -->
                     <div class="bg-slate-950/60 border border-slate-800 p-4 rounded-lg flex justify-between items-center">
                         <div>
                             <h4 id="bug-name" class="font-bold text-rose-400">⚠️ System Bug Detected</h4>
@@ -149,14 +93,12 @@ function executeAction(type) {
                         </div>
                     </div>
 
-                    <!-- Async Terminal Logger Logs -->
                     <div id="terminal-logs" class="terminal-scroll flex-grow bg-slate-950 p-3 rounded-lg border border-slate-850 text-xs font-mono text-cyan-400/90 overflow-y-auto h-32 flex flex-col gap-1">
                         <div>&gt; System initialization completed. Select an action matrix execution profile...</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Bottom Control Panel Matrix -->
             <div id="control-bar" class="hidden border-t border-slate-800 pt-4 mt-4 grid grid-cols-2 sm:grid-cols-3 gap-2">
                 <button onclick="executeAction('basic')" class="cursor-pointer bg-slate-800 hover:bg-slate-700 text-xs font-bold p-3 rounded text-left border border-slate-700 transition-all">
                     💻 Run .fillna()<br><span class="text-[10px] text-slate-400 font-normal">Costs 10 Energy</span>
@@ -172,13 +114,15 @@ function executeAction(type) {
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="text-center p-4 text-xs text-slate-600 border-t border-slate-900">
         Engineered via JavaScript Classes, Game States & OOP Mechanics
     </footer>
 
-    <!-- Game Engine JavaScript -->
     <script>
+        // Game Variables
+        let bugHP = 70;
+        let maxBugHP = 70;
+
         // OOP State Archetype
         class Player {
             constructor(role) {
@@ -217,6 +161,9 @@ function executeAction(type) {
             document.getElementById('game-phase').innerText = "Production Arena";
             document.getElementById('game-phase').className = "text-xs bg-emerald-950/50 text-emerald-400 border border-emerald-800 px-3 py-1 rounded-full uppercase tracking-wider font-bold";
 
+            bugHP = 70;
+            document.getElementById('bug-hp').innerText = `${bugHP}/${maxBugHP}`;
+
             userPlayer.updateHUD();
             logTerminal(`Account created! Welcoming our newly registered ${selectedRole} to the pipeline.`);
         }
@@ -230,24 +177,49 @@ function executeAction(type) {
         }
 
         function executeAction(type) {
-            if(!userPlayer) return;
+            if(!userPlayer || bugHP <= 0) return;
             
+            // --- Player Turn Logic ---
             if (type === 'basic') {
                 if(userPlayer.energy < 10) { logTerminal("Error: Low compute energy status! Read documentation."); return; }
                 userPlayer.energy -= 10;
+                bugHP = Math.max(0, bugHP - 15);
                 userPlayer.accuracy = Math.min(100, userPlayer.accuracy + 5);
-                logTerminal("Executed basic .fillna() pipeline mapping. Target feature matrices are responding cleanly.");
+                logTerminal("Executed .fillna() pipeline. Cleaned data rows! Damaged bug by 15 HP.");
             } else if (type === 'heavy') {
                 if(userPlayer.energy < 30) { logTerminal("Error: Insufficient compute units to process ensembles!"); return; }
                 userPlayer.energy -= 30;
+                bugHP = Math.max(0, bugHP - 35);
                 userPlayer.accuracy = Math.min(100, userPlayer.accuracy + 18);
-                logTerminal("Compiled an ensemble Random Forest estimator. Iteration divergence drop-rate detected.");
+                logTerminal("Compiled Random Forest ensemble. Damaged bug by 35 HP!");
             } else if (type === 'heal') {
                 userPlayer.energy = Math.min(userPlayer.maxEnergy, userPlayer.energy + 25);
-                logTerminal("Reading standard documentation... Refactoring internal architecture variables successfully.");
+                logTerminal("Refactored local scope logic. Restored 25 Energy.");
             }
 
-            userPlayer.updateHUD();
+            // Update Bug HP Interface
+            document.getElementById('bug-hp').innerText = `${bugHP}/${maxBugHP}`;
+
+            // Check for Player Victory
+            if(bugHP <= 0) {
+                logTerminal("🎉 VICTORY! Dataset fully debugged. +50 Compute Credits!");
+                userPlayer.credits += 50;
+                userPlayer.updateHUD();
+                return;
+            }
+
+            // --- Enemy Bug Counter-Attack Turn ---
+            if(type !== 'heal') {
+                setTimeout(() => {
+                    if(bugHP <= 0) return; 
+                    let bugDamage = 12;
+                    userPlayer.energy = Math.max(0, userPlayer.energy - bugDamage);
+                    logTerminal(`⚠️ Bug Counter-Attacks! Array overflow drained your energy by ${bugDamage} units.`);
+                    userPlayer.updateHUD();
+                }, 1000);
+            } else {
+                userPlayer.updateHUD();
+            }
         }
     </script>
 </body>
